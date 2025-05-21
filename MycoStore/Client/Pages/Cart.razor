@@ -1,0 +1,84 @@
+﻿@page "/cart"
+@using MycoStore.Client.Services
+@using MycoStore.Shared
+@inject CartService CartService
+
+
+<h2>Your Shopping Cart</h2>
+
+@if (!CartService.GetCartItems().Any())
+{
+    <p>Your cart is empty. <NavLink href="/mushrooms">Go back to shop.</NavLink></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in CartService.GetCartItems())
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" @onclick="() => DecreaseQuantity(item.ProductId)">-</button>
+                        @item.Quantity
+                        <button class="btn btn-sm btn-secondary" @onclick="() => IncreaseQuantity(item.ProductId)">+</button>
+                    </td>
+                    <td>@item.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</td>
+                    <td>@item.TotalPrice.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" @onclick="() => Remove(item.ProductId)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4>Total: @CartService.GetTotalPrice().ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</h4>
+
+    <button class="btn btn-danger" @onclick="ClearCart">Clear Cart</button>
+    <NavLink class="btn btn-success ms-2" href="/checkout">Checkout</NavLink>
+}
+
+@code {
+    private void IncreaseQuantity(int productId)
+    {
+        var item = CartService.GetCartItems().FirstOrDefault(i => i.ProductId == productId);
+        if (item != null)
+        {
+            var fakeProduct = new MushroomProduct
+                {
+                    Id = item.ProductId,
+                    Name = item.Name,
+                    Price = item.Price,
+                    ImageUrl = item.ImageUrl
+                };
+
+            CartService.AddToCart(fakeProduct);
+        }
+    }
+
+    private void DecreaseQuantity(int productId)
+    {
+        var item = CartService.GetCartItems().FirstOrDefault(i => i.ProductId == productId);
+        if (item != null && item.Quantity > 1)
+        {
+            item.Quantity--;
+        }
+        else
+        {
+            CartService.RemoveFromCart(productId);
+        }
+    }
+
+    private void Remove(int id) => CartService.RemoveFromCart(id);
+    private void ClearCart() => CartService.ClearCart();
+}

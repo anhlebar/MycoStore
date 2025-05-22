@@ -1,50 +1,74 @@
 ﻿@page "/mushrooms"
 @using MycoStore.Shared
-@inject CartService CartService
 @using MycoStore.Client.Services
+@inject CartService CartService
 
-
-<h2>Mushroom Products</h2>
+<h3>Mushroom Products</h3>
 
 @foreach (ProductType type in Enum.GetValues(typeof(ProductType)))
 {
-    <h3>@type</h3>
-
-    var itemsInGroup = products.Where(p => p.Type == type).ToList();
-
-    if (itemsInGroup.Count == 0)
-    {
-        <p><em>No products found in this category.</em></p>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var product in itemsInGroup)
-            {
-                <div class="col-4 mb-4">
-                    <div class="card h-100">
-                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" />
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">@product.Description</p>
-                            <p><strong>Use:</strong> @product.Use</p>
-                            <p><strong>Price:</strong> @product.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</p>
-                            <button class="btn btn-primary" @onclick="@(() => CartService.AddToCart(product))">Add to Cart</button>
-                        </div>
+    <h4>@type</h4>
+    <div class="row">
+        @foreach (var product in AllProducts.Where(p => p.Type == type))
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="@product.ImageUrl" alt="@product.Name" />
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">@product.Description</p>
+                        <p><strong>Use:</strong> @product.Use</p>
+                        <p><strong>Price:</strong> @product.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</p>
+                        <button class="btn btn-primary" @onclick="() => CartService.AddToCart(product)">Add to Cart</button>
                     </div>
                 </div>
-            }
-        </div>
-    }
+            </div>
+        }
+    </div>
 }
 
 @code {
-    private List<MushroomProduct> products = new()
+    private List<MushroomProduct> AllProducts = new()
     {
-        new() { Id = 1, Name = "Reishi Culture", Description = "Reishi mycelium culture", Price = 12.99M, Type = ProductType.Culture, Use = MushroomUse.Medicinal, ImageUrl = "https://via.placeholder.com/150" },
-        new() { Id = 2, Name = "Lion’s Mane GrowBox", Description = "Ready to grow Lion’s Mane", Price = 29.99M, Type = ProductType.GrowBox, Use = MushroomUse.Medicinal, ImageUrl = "https://via.placeholder.com/150" },
-        new() { Id = 3, Name = "Shiitake Dried", Description = "Premium dried shiitake mushrooms", Price = 9.99M, Type = ProductType.DryMushroom, Use = MushroomUse.Edible, ImageUrl = "https://via.placeholder.com/150" },
-        new() { Id = 4, Name = "Cordyceps Extract", Description = "Powerful cordyceps tincture", Price = 24.99M, Type = ProductType.TinctureExtract, Use = MushroomUse.Medicinal, ImageUrl = "https://via.placeholder.com/150" },
-        new() { Id = 5, Name = "Golden Oyster Culture", Description = "Golden Oyster liquid culture", Price = 10.99M, Type = ProductType.Culture, Use = MushroomUse.Edible, ImageUrl = "https://via.placeholder.com/150" }
+        new MushroomProduct
+        {
+            Id = 1,
+            Name = "Reishi Culture",
+            Description = "Reishi mycelium culture",
+            Use = MushroomUse.Medicinal,
+            Price = 12.99m,
+            ImageUrl = "images/reishi.jpg",
+            Type = ProductType.Culture
+        },
+        new MushroomProduct
+        {
+            Id = 2,
+            Name = "Lion’s Mane GrowBox",
+            Description = "Ready to grow Lion’s Mane",
+            Use = MushroomUse.Medicinal,
+            Price = 29.99m,
+            ImageUrl = "images/lionsmane_box.jpg",
+            Type = ProductType.GrowBox
+        },
+        new MushroomProduct
+        {
+            Id = 3,
+            Name = "Shiitake Dried",
+            Description = "Premium dried shiitake mushrooms",
+            Use = MushroomUse.Edible,
+            Price = 9.99m,
+            ImageUrl = "images/shiitake_dried.jpg",
+            Type = ProductType.DryMushroom
+        },
+        new MushroomProduct
+        {
+            Id = 4,
+            Name = "Reishi Extract",
+            Description = "Concentrated extract of Reishi mushroom",
+            Use = MushroomUse.Medicinal,
+            Price = 19.99m,
+            ImageUrl = "images/reishi_extract.jpg",
+            Type = ProductType.TinctureExtract
+        }
     };
 }

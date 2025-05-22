@@ -1,0 +1,27 @@
+﻿@page "/culture"
+@inject CartService CartService
+@using MycoStore.Shared
+
+<h3>Culture Products</h3>
+
+@foreach (var product in Products)
+{
+    <div class="card m-2 p-2" style="width: 300px;">
+        <img src="@product.ImageUrl" alt="@product.Name" class="card-img-top" />
+        <div class="card-body">
+            <h5 class="card-title">@product.Name</h5>
+            <p>@product.Description</p>
+            <p><strong>Use:</strong> @product.Use</p>
+            <p><strong>Price:</strong> @product.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</p>
+            <button class="btn btn-primary" @onclick="() => CartService.AddToCart(product)">Add to Cart</button>
+        </div>
+    </div>
+}
+
+@code {
+    private List<MushroomProduct> Products = new()
+    {
+        new MushroomProduct { Id = 1, Name = "Reishi Culture", Description = "Reishi mycelium culture", Use = MushroomUse.Medicinal, Price = 12.99m, ImageUrl = "images/reishi.jpg" },
+        new MushroomProduct { Id = 2, Name = "Golden Oyster Culture", Description = "Golden Oyster liquid culture", Use = MushroomUse.Edible, Price = 10.99m, ImageUrl = "images/golden_oyster.jpg" }
+    };
+}

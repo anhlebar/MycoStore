@@ -1,0 +1,26 @@
+﻿@page "/growbox"
+@inject CartService CartService
+@using MycoStore.Shared
+
+<h3>Grow Box Products</h3>
+
+@foreach (var product in Products)
+{
+    <div class="card m-2 p-2" style="width: 300px;">
+        <img src="@product.ImageUrl" alt="@product.Name" class="card-img-top" />
+        <div class="card-body">
+            <h5 class="card-title">@product.Name</h5>
+            <p>@product.Description</p>
+            <p><strong>Use:</strong> @product.Use</p>
+            <p><strong>Price:</strong> @product.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</p>
+            <button class="btn btn-primary" @onclick="() => CartService.AddToCart(product)">Add to Cart</button>
+        </div>
+    </div>
+}
+
+@code {
+    private List<MushroomProduct> Products = new()
+    {
+        new MushroomProduct { Id = 3, Name = "Lion’s Mane GrowBox", Description = "Ready to grow Lion’s Mane", Use = MushroomUse.Medicinal, Price = 29.99m, ImageUrl = "images/lionsmane_box.jpg" }
+    };
+}
